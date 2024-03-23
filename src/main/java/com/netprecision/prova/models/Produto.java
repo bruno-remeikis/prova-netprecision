@@ -20,9 +20,9 @@ public class Produto {
    @Id
    private Integer codigo;
 
-   @Column
+   @Column(nullable = false, unique = true)
    private String nome;
 
-   @Column
+   @Column(nullable = false)
    private float preco;
 }

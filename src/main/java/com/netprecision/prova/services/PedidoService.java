@@ -1,14 +1,15 @@
 package com.netprecision.prova.services;
 
+import com.netprecision.prova.models.ItemPedido;
 import com.netprecision.prova.models.Pedido;
 import com.netprecision.prova.models.Produto;
+import com.netprecision.prova.models.dto.ItemPedidoDTO;
 import com.netprecision.prova.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class PedidoService
@@ -19,6 +20,9 @@ public class PedidoService
     @Autowired
     private ProdutoService produtoService;
 
+    @Autowired
+    private ItemPedidoService itemPedidoService;
+
     public Integer create() {
         return pedidoRepository.save(new Pedido()).getId();
     }
@@ -26,18 +30,109 @@ public class PedidoService
     public Pedido findById(int id) {
         return pedidoRepository.findById(id).orElse(null);
     }
-    public Pedido addProdutos(int id, List<Integer> idProdutos) throws Exception {
+
+    public float calcularTotal(int id) throws Exception {
+        float total =  pedidoRepository.calcularTotal(id);
+
+        if(total == -1)
+            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+
+        return total;
+    }
+
+    public float calcularTotal(int id, List<ItemPedidoDTO> dtos) throws Exception {
         Pedido p = pedidoRepository.findById(id).orElse(null);
 
         if(p == null)
-            throw new Exception("Produto não encontrado.");
+            throw new Exception("Não existe pedido aberto com ID " + id + ".");
 
-        List<Produto> produtos = produtoService.findAllById(idProdutos);
+        List<ItemPedido> itensNovos = new LinkedList();
 
-        if(produtos.stream().anyMatch(Objects::isNull))
-            throw new Exception("Um ou mais produtos informados não existe.");
+        for(ItemPedidoDTO dto: dtos) {
+            boolean itemNovo = true;
+            for(ItemPedido i: p.getItensPedidos()) {
+                if(i.getProduto().getCodigo().equals(dto.getCodigoProduto())) {
+                    i.setQuantidade(i.getQuantidade() + dto.getQuantidade());
+                    itemNovo = false;
+                    break;
+                }
+            }
 
-        p.getProdutos().addAll(produtos);
+            if(itemNovo) {
+                Produto produto = produtoService.findById(dto.getCodigoProduto());
+                ItemPedido itemPedido = itemPedidoService.save(
+                    new ItemPedido(null, produto, dto.getQuantidade())
+                );
+                itensNovos.add(itemPedido);
+            }
+        }
+
+        p.getItensPedidos().addAll(itensNovos);
+        pedidoRepository.save(p);
+        return pedidoRepository.calcularTotal(id);
+    }
+
+    public Pedido addItemAoPedido(int id, ItemPedidoDTO dto) throws Exception
+    {
+        Pedido p = pedidoRepository.findById(id).orElse(null);
+
+        if(p == null)
+            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+
+        // Busca o item do pedido com o código de produto especificado em `dto`
+        ItemPedido itemPedido = p.getItensPedidos().stream()
+            .filter(
+                i -> i.getProduto().getCodigo().equals(dto.getCodigoProduto())
+            ).findFirst().orElse(null);
+
+        // Caso o produto ainda não tenha sido solicitado, adiciona-o ao pedido
+        if(itemPedido == null) {
+            Produto produto = produtoService.findById(dto.getCodigoProduto());
+
+            if(produto == null)
+                throw new Exception("Produto de código " + dto.getCodigoProduto() + " não encontrado.");
+
+            itemPedido = itemPedidoService.save(
+                new ItemPedido(null, produto, dto.getQuantidade())
+            );
+            p.getItensPedidos().add(itemPedido);
+        }
+        // Caso o produto já tenha sido pedido anteriormente, apenas adiciona à sua `quantidade`
+        else
+            itemPedido.setQuantidade(itemPedido.getQuantidade() + dto.getQuantidade());
+
+        return pedidoRepository.save(p);
+    }
+
+    public Pedido removerItemDoPedido(int id, ItemPedidoDTO dto) throws Exception
+    {
+        Pedido p = pedidoRepository.findById(id).orElse(null);
+
+        if(p == null)
+            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+
+        // Busca o item do pedido com o código de produto especificado em `dto`
+        ItemPedido itemPedido = p.getItensPedidos().stream()
+            .filter(
+                i -> i.getProduto().getCodigo().equals(dto.getCodigoProduto())
+            ).findFirst().orElse(null);
+
+        // Caso o produto ainda não tenha sido solicitado:
+        if(itemPedido == null) {
+            throw new Exception("O produto de código " + dto.getCodigoProduto() + " não foi solicitado neste pedido.");
+        }
+        // Caso o produto já tenha sido pedido anteriormente, apenas adiciona à sua `quantidade`
+        else {
+            if(dto.getQuantidade() > itemPedido.getQuantidade())
+                throw new Exception("A quantidade de itens que deseja remover é maior que a quantidade total.");
+
+            // Caso deseje que o registro seja totalmente removido quando sua quantidade chegar a zero, descomente o trecho abaixo:
+            /*if(dto.getQuantidade() == itemPedido.getQuantidade())
+                itemPedidoService.delete(itemPedido);
+            else*/
+            itemPedido.setQuantidade(itemPedido.getQuantidade() - dto.getQuantidade());
+        }
+
         return pedidoRepository.save(p);
     }
 }

@@ -1,7 +1,7 @@
 package com.netprecision.prova.controllers;
 
 import com.netprecision.prova.models.Pedido;
-import com.netprecision.prova.models.Produto;
+import com.netprecision.prova.models.dto.ItemPedidoDTO;
 import com.netprecision.prova.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,15 +17,8 @@ public class PedidoController
     @Autowired
     private PedidoService pedidoService;
 
-    @PostMapping
-    public ResponseEntity criarPedido() {
-        return ResponseEntity.ok(
-            pedidoService.create()
-        );
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable int id) {
+    public ResponseEntity findById(@PathVariable int id) {
         Pedido p = pedidoService.findById(id);
 
         return p != null
@@ -33,11 +26,60 @@ public class PedidoController
             : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Código do pedido inválido.");
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity addProdutos(@PathVariable int id, @RequestBody List<Integer> Idprodutos) {
+    @GetMapping("/{id}/total")
+    public ResponseEntity calcularTotal(@PathVariable int id) {
         try {
             return ResponseEntity.ok(
-                pedidoService.addProdutos(id, Idprodutos)
+                pedidoService.calcularTotal(id)
+            );
+        }
+        catch(Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity criarPedido() {
+        return ResponseEntity.ok(
+            pedidoService.create()
+        );
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity calcularTotal(@PathVariable int id, @RequestBody List<ItemPedidoDTO> dtos) {
+        try {
+            return ResponseEntity.ok(
+                pedidoService.calcularTotal(id, dtos)
+            );
+        }
+        catch(Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/adicionar")
+    public ResponseEntity addItemAoPedido(@PathVariable int id, @RequestBody ItemPedidoDTO dto) {
+        try {
+            return ResponseEntity.ok(
+                pedidoService.addItemAoPedido(id, dto)
+            );
+        }
+        catch(Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}/remover")
+    public ResponseEntity removerItemDoPedido(@PathVariable int id, @RequestBody ItemPedidoDTO dto) {
+        try {
+            return ResponseEntity.ok(
+                pedidoService.removerItemDoPedido(id, dto)
             );
         }
         catch(Exception e) {

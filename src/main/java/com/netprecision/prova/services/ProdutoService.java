@@ -17,6 +17,7 @@ public class ProdutoService implements CommandLineRunner
 
     @Override
     public void run(String... args) throws Exception {
+        // https://stackoverflow.com/questions/62999267/how-to-run-mysql-scripts-in-docker-image
         produtoRepository.saveAll(Arrays.asList(
             new Produto(1147, "Cachorro Quente", 3),
             new Produto(1154, "Bauru", 2.5f),
@@ -27,6 +28,10 @@ public class ProdutoService implements CommandLineRunner
 
     public List<Produto> findAll() {
         return produtoRepository.findAll();
+    }
+
+    public Produto findById(int id) {
+        return produtoRepository.findById(id).orElse(null);
     }
 
     public List<Produto> findAllById(List<Integer> ids) {

@@ -20,7 +20,10 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private List<Produto> produtos;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_pedido")
+    private List<ItemPedido> itensPedidos;
+
+    @Column(nullable = false)
+    private boolean fechado = false;
 }
