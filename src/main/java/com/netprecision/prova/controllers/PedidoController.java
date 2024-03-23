@@ -3,6 +3,8 @@ package com.netprecision.prova.controllers;
 import com.netprecision.prova.models.Pedido;
 import com.netprecision.prova.models.dto.ItemPedidoDTO;
 import com.netprecision.prova.services.PedidoService;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +68,20 @@ public class PedidoController
         try {
             return ResponseEntity.ok(
                 pedidoService.addItemAoPedido(id, dto)
+            );
+        }
+        catch(Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/fechar")
+    public ResponseEntity fechar(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(
+                pedidoService.fechar(id)
             );
         }
         catch(Exception e) {

@@ -23,6 +23,18 @@ public class PedidoService
     @Autowired
     private ItemPedidoService itemPedidoService;
 
+    private Pedido findByIdMandatory(int id, boolean apenasAberto) throws Exception {
+        Pedido p = pedidoRepository.findById(id).orElse(null);
+
+        if(p == null)
+            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+
+        if(apenasAberto && p.isFechado())
+            throw new Exception("Este pedido já está fechado.");
+
+        return p;
+    }
+
     public Integer create() {
         return pedidoRepository.save(new Pedido()).getId();
     }
@@ -41,10 +53,7 @@ public class PedidoService
     }
 
     public float calcularTotal(int id, List<ItemPedidoDTO> dtos) throws Exception {
-        Pedido p = pedidoRepository.findById(id).orElse(null);
-
-        if(p == null)
-            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+        Pedido p = findByIdMandatory(id, true);
 
         List<ItemPedido> itensNovos = new LinkedList();
 
@@ -74,16 +83,10 @@ public class PedidoService
 
     public Pedido addItemAoPedido(int id, ItemPedidoDTO dto) throws Exception
     {
-        Pedido p = pedidoRepository.findById(id).orElse(null);
-
-        if(p == null)
-            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+        Pedido p = findByIdMandatory(id, true);
 
         // Busca o item do pedido com o código de produto especificado em `dto`
-        ItemPedido itemPedido = p.getItensPedidos().stream()
-            .filter(
-                i -> i.getProduto().getCodigo().equals(dto.getCodigoProduto())
-            ).findFirst().orElse(null);
+        ItemPedido itemPedido = p.getItemByCodigoProduto(dto.getCodigoProduto());
 
         // Caso o produto ainda não tenha sido solicitado, adiciona-o ao pedido
         if(itemPedido == null) {
@@ -104,18 +107,19 @@ public class PedidoService
         return pedidoRepository.save(p);
     }
 
+    public Pedido fechar(int id) throws Exception {
+        Pedido p = findByIdMandatory(id, true);
+
+        p.setFechado(true);
+        return pedidoRepository.save(p);
+    }
+
     public Pedido removerItemDoPedido(int id, ItemPedidoDTO dto) throws Exception
     {
-        Pedido p = pedidoRepository.findById(id).orElse(null);
-
-        if(p == null)
-            throw new Exception("Não existe pedido aberto com ID " + id + ".");
+        Pedido p = findByIdMandatory(id, true);
 
         // Busca o item do pedido com o código de produto especificado em `dto`
-        ItemPedido itemPedido = p.getItensPedidos().stream()
-            .filter(
-                i -> i.getProduto().getCodigo().equals(dto.getCodigoProduto())
-            ).findFirst().orElse(null);
+        ItemPedido itemPedido = p.getItemByCodigoProduto(dto.getCodigoProduto());
 
         // Caso o produto ainda não tenha sido solicitado:
         if(itemPedido == null) {
@@ -126,11 +130,10 @@ public class PedidoService
             if(dto.getQuantidade() > itemPedido.getQuantidade())
                 throw new Exception("A quantidade de itens que deseja remover é maior que a quantidade total.");
 
-            // Caso deseje que o registro seja totalmente removido quando sua quantidade chegar a zero, descomente o trecho abaixo:
-            /*if(dto.getQuantidade() == itemPedido.getQuantidade())
+            if(dto.getQuantidade() == itemPedido.getQuantidade())
                 itemPedidoService.delete(itemPedido);
-            else*/
-            itemPedido.setQuantidade(itemPedido.getQuantidade() - dto.getQuantidade());
+            else
+                itemPedido.setQuantidade(itemPedido.getQuantidade() - dto.getQuantidade());
         }
 
         return pedidoRepository.save(p);

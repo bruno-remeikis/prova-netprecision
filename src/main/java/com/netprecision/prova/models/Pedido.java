@@ -26,4 +26,11 @@ public class Pedido {
 
     @Column(nullable = false)
     private boolean fechado = false;
+
+    public ItemPedido getItemByCodigoProduto(int codigoProduto) {
+        return itensPedidos.stream()
+            .filter(
+                    i -> i.getProduto().getCodigo().equals(codigoProduto)
+            ).findFirst().orElse(null);
+    }
 }
