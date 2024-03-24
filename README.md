@@ -1,6 +1,37 @@
 # Prova da netprecision para desenvolvedor Java
 
+Esta é uma API desenvolvida para responder à prova da [netprecision](https://netprecision.com.br/).
+
+## Demonstração
+
+Para demonstração, esta API foi publicada na [Heroku](https://dashboard.heroku.com/)
+
+- Link para acesso da demo: [https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/](https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/)
+
+## Tecnologias
+Para o desenvolvimento desta API, foram utilizadas as seguintes tecnologias:
+- Java 21: Linguagem de programação
+  - Spring Boot: framework para criação de APIs REST
+  - JPA: Mapear as entidades do banco de dados
+  - Hibernate: Acessar e manipular banco de dados
+  - Lombok: Tornar criação de classes model menos verbosa
+  - JUnit: Biblioteca para testes unitários
+  - Mockito: Biblioteca para mock de dados
+- MySQL: Banco de dados
 ## Rotas (endpoints) da API
+
+### $\color{cyan}{GET}$ `/produto` &emsp; Exibir todos os produtos
+```json
+Response example
+[
+  {
+    "codigo": 1147,
+    "nome": "Cachorro Quente",
+    "preco": 3.0
+  },
+  ...
+]
+```
 
 ### $\color{green}{POST}$ `/pedido` &emsp; Criar pedido
 ```json
@@ -70,13 +101,13 @@ Response example
 ```json
 Body example
 [
-	{
-		"codigoProduto": 1147,
-		"quantidade": 1
-	}, {
-		"codigoProduto": 1164,
-		"quantidade": 2
-	}
+  {
+    "codigoProduto": 1147,
+    "quantidade": 1
+  }, {
+    "codigoProduto": 1164,
+    "quantidade": 2
+  }
 ]
 ```
 
@@ -99,8 +130,8 @@ Response example
 ```json
 Body example
 {
-	"codigoProduto": 1155,
-	"quantidade": 10
+  "codigoProduto": 1155,
+  "quantidade": 10
 }
 ```
 
