@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 //@Slf4j
 @RequestMapping("/pedido")
-@CrossOrigin
+@CrossOrigin(origins = "https://prova-netprecision-web.vercel.app/")
 public class PedidoController
 {
     @Autowired

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/produto")
-@CrossOrigin
+@CrossOrigin(origins = "https://prova-netprecision-web.vercel.app/")
 public class ProdutoController
 {
     @Autowired
