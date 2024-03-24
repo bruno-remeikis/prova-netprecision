@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -20,8 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PedidoServiceTest {
@@ -168,9 +169,9 @@ class PedidoServiceTest {
             );
         }
 
-        /*@Test
-        @DisplayName("")
-        void deve() throws Exception {
+        @Test
+        @DisplayName("Deve adicionar itens e calcular total com sucesso")
+        void deveAdicionarItensECalcularTotalComSucesso() throws Exception {
             float total = 7.11f * 2 + 3.91f * 3 + 77.3f * 1;
 
             Produto p1 = new Produto(1, "Produto 1", 7.11f),
@@ -184,32 +185,29 @@ class PedidoServiceTest {
 
             Pedido p = new Pedido(1, itens, false);
 
-            //doReturn(p)
-            //    .when(pedidoRepository).findById(p.getId());
+            doReturn(Optional.of(p))
+                .when(pedidoRepository).findById(p.getId());
 
             doReturn(p3)
                 .when(produtoService).findById(p3.getCodigo());
 
-            for(ItemPedido i: itens)
-                doReturn(i)
-                    .when(itemPedidoService).save(i);
+            doReturn(itens.get(0), itens.get(1))
+                .when(itemPedidoService).save(any());
 
-            doReturn(p)
-                .when(pedidoRepository).save(p);
+            //doReturn(p)
+            //    .when(pedidoRepository).save(p);
 
-            doReturn(total)
-                .when(pedidoRepository).calcularTotal(p.getId());
+            //doReturn(total)
+            //   .when(pedidoRepository).calcularTotal(p.getId());
 
-            //var output = pedidoService.calcularTotal(
-            //    p.getId(),
-            //    List.of(new ItemPedidoDTO(3, 1))
-            //);
+            var output = pedidoService.calcularTotal(
+                p.getId(),
+                List.of(new ItemPedidoDTO(3, 1))
+            );
 
             //System.out.println(output);
 
-            //assertEquals(total, output);
-
-            assertTrue(true);
-        }*/
+            assertEquals(total, output);
+        }
     }
 }
