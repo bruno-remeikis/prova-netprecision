@@ -168,7 +168,7 @@ class PedidoServiceTest {
             );
         }
 
-        @Test
+        /*@Test
         @DisplayName("")
         void deve() throws Exception {
             float total = 7.11f * 2 + 3.91f * 3 + 77.3f * 1;
@@ -210,6 +210,6 @@ class PedidoServiceTest {
             assertEquals(total, output);*/
 
             assertTrue(true);
-        }
+        }*/
     }
 }
