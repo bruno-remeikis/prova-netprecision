@@ -20,7 +20,13 @@ Para o desenvolvimento desta API, foram utilizadas as seguintes tecnologias:
 - MySQL: Banco de dados
 ## Rotas (endpoints) da API
 
-### $\color{cyan}{GET}$ `/produto` &emsp; Exibir todos os produtos
+### $\color{cyan}{GET}$ `/health` &emsp; Verificar se API está rodando &emsp; [link](https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/health)
+```json
+Response example
+API is running...
+```
+
+### $\color{cyan}{GET}$ `/produto` &emsp; Exibir todos os produtos &emsp; [link](https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/produto)
 ```json
 Response example
 [
@@ -43,7 +49,7 @@ Response example
 }
 ```
 
-### $\color{cyan}{GET}$ `/pedido/{id}` &emsp; Exibir pedido
+### $\color{cyan}{GET}$ `/pedido/{id}` &emsp; Exibir pedido &emsp; [link](https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/pedido/1)
 ```json
 Response example
 {
@@ -63,7 +69,7 @@ Response example
 }
 ```
 
-### $\color{cyan}{GET}$ `/pedido/{id}/total` &emsp; Exibir valor total do pedido
+### $\color{cyan}{GET}$ `/pedido/{id}/total` &emsp; Exibir valor total do pedido &emsp; [link](https://prova-netprecision-bruno-rmks-372131324b1e.herokuapp.com/pedido/1/total)
 ```json
 Response example
 12.0
