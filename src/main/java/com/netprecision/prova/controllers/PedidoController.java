@@ -3,8 +3,8 @@ package com.netprecision.prova.controllers;
 import com.netprecision.prova.models.Pedido;
 import com.netprecision.prova.models.dto.ItemPedidoDTO;
 import com.netprecision.prova.services.PedidoService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
+//import io.swagger.v3.oas.annotations.Operation;
+//import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+//@Slf4j
 @RequestMapping("/pedido")
 public class PedidoController
 {
@@ -20,6 +21,7 @@ public class PedidoController
     private PedidoService pedidoService;
 
     @GetMapping("/{id}")
+    //@Operation(summary = "TESTE", method = "GET")
     public ResponseEntity findById(@PathVariable int id) {
         Pedido p = pedidoService.findById(id);
 

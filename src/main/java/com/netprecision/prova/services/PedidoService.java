@@ -23,7 +23,7 @@ public class PedidoService
     @Autowired
     private ItemPedidoService itemPedidoService;
 
-    private Pedido findByIdMandatory(int id, boolean apenasAberto) throws Exception {
+    public Pedido findByIdMandatory(int id, boolean apenasAberto) throws Exception {
         Pedido p = pedidoRepository.findById(id).orElse(null);
 
         if(p == null)
@@ -35,8 +35,8 @@ public class PedidoService
         return p;
     }
 
-    public Integer create() {
-        return pedidoRepository.save(new Pedido()).getId();
+    public Pedido create() {
+        return pedidoRepository.save(new Pedido());
     }
 
     public Pedido findById(int id) {
