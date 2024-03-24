@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 //@Slf4j
 @RequestMapping("/pedido")
+@CrossOrigin
 public class PedidoController
 {
     @Autowired
