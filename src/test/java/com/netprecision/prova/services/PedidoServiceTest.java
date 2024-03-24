@@ -184,8 +184,8 @@ class PedidoServiceTest {
 
             Pedido p = new Pedido(1, itens, false);
 
-            /*doReturn(p)
-                .when(pedidoRepository).findById(p.getId());*/
+            //doReturn(p)
+            //    .when(pedidoRepository).findById(p.getId());
 
             doReturn(p3)
                 .when(produtoService).findById(p3.getCodigo());
@@ -200,14 +200,14 @@ class PedidoServiceTest {
             doReturn(total)
                 .when(pedidoRepository).calcularTotal(p.getId());
 
-            /*var output = pedidoService.calcularTotal(
-                p.getId(),
-                List.of(new ItemPedidoDTO(3, 1))
-            );
+            //var output = pedidoService.calcularTotal(
+            //    p.getId(),
+            //    List.of(new ItemPedidoDTO(3, 1))
+            //);
 
-            System.out.println(output);
+            //System.out.println(output);
 
-            assertEquals(total, output);*/
+            //assertEquals(total, output);
 
             assertTrue(true);
         }*/
