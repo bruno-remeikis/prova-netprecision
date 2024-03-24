@@ -1,5 +1,6 @@
 package com.netprecision.prova.controllers;
 
+import com.netprecision.prova.exceptions.BusinessException;
 import com.netprecision.prova.models.Pedido;
 import com.netprecision.prova.models.dto.ItemPedidoDTO;
 import com.netprecision.prova.services.PedidoService;
@@ -38,9 +39,9 @@ public class PedidoController
                 pedidoService.calcularTotal(id)
             );
         }
-        catch(Exception e) {
+        catch(BusinessException e) {
             return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(e.getHttpStatus())
                 .body(e.getMessage());
         }
     }
@@ -59,9 +60,9 @@ public class PedidoController
                 pedidoService.calcularTotal(id, dtos)
             );
         }
-        catch(Exception e) {
+        catch(BusinessException e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(e.getMessage());
         }
     }
@@ -73,9 +74,9 @@ public class PedidoController
                 pedidoService.addItemAoPedido(id, dto)
             );
         }
-        catch(Exception e) {
+        catch(BusinessException e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(e.getMessage());
         }
     }
@@ -87,9 +88,9 @@ public class PedidoController
                 pedidoService.fechar(id)
             );
         }
-        catch(Exception e) {
+        catch(BusinessException e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(e.getMessage());
         }
     }
@@ -101,9 +102,9 @@ public class PedidoController
                 pedidoService.removerItemDoPedido(id, dto)
             );
         }
-        catch(Exception e) {
+        catch(BusinessException e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(e.getMessage());
         }
     }
